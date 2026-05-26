@@ -1,0 +1,11 @@
+{
+  "label": "Primera A",
+  "season": "2025/2026",
+  "byPosition": {
+    "Arquera": { "avg_yoyo": 680, "count": 1 },
+    "Defensora": { "avg_yoyo": 720, "count": 5 },
+    "Volante": { "avg_yoyo": 1180, "count": 8 },
+    "Delantera": { "avg_yoyo": 954, "count": 7 }
+  },
+  "general": { "avg_yoyo": 971, "count": 21 }
+}

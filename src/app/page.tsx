@@ -6,8 +6,13 @@ import Image from "next/image";
 import { PlayersData, Player } from "@/types/player";
 import { loadPlayersData, sortedCategories, getCategoryColor } from "@/lib/data";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList, ReferenceLine,
 } from "recharts";
+
+interface PrimeraData {
+  byPosition: Record<string, { avg_yoyo: number; count: number }>;
+  general: { avg_yoyo: number; count: number };
+}
 
 function calcAvg(players: Player[]): { yoyo: number; cmj: number; n: number } {
   const withYoyo = players
@@ -78,11 +83,13 @@ const EQUIPO_COLORS: Record<string, string> = {
 
 export default function Dashboard() {
   const [data, setData] = useState<PlayersData | null>(null);
+  const [primera, setPrimera] = useState<PrimeraData | null>(null);
   const [chartView, setChartView] = useState<ChartView>("division");
   const [destFilter, setDestFilter] = useState<string>("club");
 
   useEffect(() => {
     loadPlayersData().then(setData);
+    fetch("/data/primera.json").then((r) => r.json()).then(setPrimera);
   }, []);
 
   const stats = useMemo(() => {
@@ -158,13 +165,23 @@ export default function Dashboard() {
             n: stats.byCategory[cat].n,
             fill: EQUIPO_COLORS[cat] || "#94a3b8",
           }));
-        const posicionData = [
-          { name: "Arquera", yoyo: stats.byPosition["Arquera"].yoyo, cmj: stats.byPosition["Arquera"].cmj, n: stats.byPosition["Arquera"].n, fill: "#dc2626" },
-          { name: "Defensora", yoyo: stats.byPosition["Defensora"].yoyo, cmj: stats.byPosition["Defensora"].cmj, n: stats.byPosition["Defensora"].n, fill: "#111111" },
-          { name: "Volante", yoyo: stats.byPosition["Volante"].yoyo, cmj: stats.byPosition["Volante"].cmj, n: stats.byPosition["Volante"].n, fill: "#ef4444" },
-          { name: "Delantera", yoyo: stats.byPosition["Delantera"].yoyo, cmj: stats.byPosition["Delantera"].cmj, n: stats.byPosition["Delantera"].n, fill: "#374151" },
-        ];
-        const chartData = chartView === "division" ? divisionData : chartView === "sub" ? subData : chartView === "posicion" ? posicionData : equiposData;
+        const posiciones = ["Arquera", "Defensora", "Volante", "Delantera"] as const;
+        const posicionData = posiciones.map((pos) => ({
+          name: pos,
+          yoyo: stats.byPosition[pos].yoyo,
+          cmj: stats.byPosition[pos].cmj,
+          objetivo: primera?.byPosition[pos]?.avg_yoyo || 0,
+          n: stats.byPosition[pos].n,
+          fill: pos === "Arquera" ? "#dc2626" : pos === "Defensora" ? "#111111" : pos === "Volante" ? "#ef4444" : "#374151",
+        }));
+        const divSubEquipoData = [...divisionData, ...subData, ...equiposData].map((d) => ({ ...d, objetivo: 0 }));
+        const allChartData = {
+          division: divisionData.map((d) => ({ ...d, objetivo: 0 })),
+          sub: subData.map((d) => ({ ...d, objetivo: 0 })),
+          equipos: equiposData.map((d) => ({ ...d, objetivo: 0 })),
+          posicion: posicionData,
+        };
+        const chartData = allChartData[chartView];
 
         return (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
@@ -177,7 +194,8 @@ export default function Dashboard() {
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 12, border: "1px solid #e2e8f0" }}
                   formatter={(value, name) => {
-                    if (name === "yoyo") return [`${value}m`, "Yo-Yo"];
+                    if (name === "yoyo" || name === "Juveniles") return [`${value}m`, "Juveniles"];
+                    if (name === "objetivo" || name === "Obj. Primera") return [`${value}m`, "Obj. Primera A"];
                     return [`${value}cm`, "CMJ"];
                   }}
                   labelFormatter={(label) => {
@@ -186,12 +204,17 @@ export default function Dashboard() {
                     return `${displayName} (${item?.n} jug.)`;
                   }}
                 />
-                <Bar dataKey="yoyo" radius={[8, 8, 0, 0]}>
+                <Bar dataKey="yoyo" radius={[8, 8, 0, 0]} name="Juveniles">
                   {chartData.map((entry, i) => (
                     <Cell key={i} fill={entry.fill} />
                   ))}
-                  <LabelList dataKey="yoyo" position="top" fontSize={11} fontWeight={700} formatter={(v) => `${v}m`} />
+                  <LabelList dataKey="yoyo" position="top" fontSize={11} fontWeight={700} formatter={(v: any) => `${v}m`} />
                 </Bar>
+                {chartView === "posicion" && (
+                  <Bar dataKey="objetivo" radius={[8, 8, 0, 0]} fill="#dc2626" opacity={0.2} name="Obj. Primera">
+                    <LabelList dataKey="objetivo" position="top" fontSize={9} fontWeight={600} fill="#b91c1c" formatter={(v: any) => v > 0 ? `${v}m` : ""} />
+                  </Bar>
+                )}
               </BarChart>
             </ResponsiveContainer>
             <div className="flex gap-2 mt-3">
