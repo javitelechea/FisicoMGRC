@@ -154,17 +154,28 @@ export default function Dashboard() {
           { name: "Todas C", yoyo: stats.bySub["C"].yoyo, cmj: stats.bySub["C"].cmj, n: stats.bySub["C"].n, fill: "#ef4444" },
           { name: "Todas D", yoyo: stats.bySub["D"].yoyo, cmj: stats.bySub["D"].cmj, n: stats.bySub["D"].n, fill: "#374151" },
         ];
+        const primeraEntry = primera ? {
+          name: "1ra A",
+          fullName: "Primera A",
+          yoyo: primera.general.avg_yoyo,
+          cmj: 0,
+          n: primera.general.count,
+          fill: "#facc15",
+        } : null;
         const equipoOrder = ["5ta A","5ta B","5ta C","5ta D","6ta A","6ta B","6ta C","6ta D","7ma A","7ma B","7ma C","7ma D"];
-        const equiposData = equipoOrder
-          .filter((cat) => stats.byCategory[cat])
-          .map((cat) => ({
-            name: cat.replace("ta ", "").replace("ma ", ""),
-            fullName: cat,
-            yoyo: stats.byCategory[cat].yoyo,
-            cmj: stats.byCategory[cat].cmj,
-            n: stats.byCategory[cat].n,
-            fill: EQUIPO_COLORS[cat] || "#94a3b8",
-          }));
+        const equiposData = [
+          ...(primeraEntry ? [primeraEntry] : []),
+          ...equipoOrder
+            .filter((cat) => stats.byCategory[cat])
+            .map((cat) => ({
+              name: cat.replace("ta ", "").replace("ma ", ""),
+              fullName: cat,
+              yoyo: stats.byCategory[cat].yoyo,
+              cmj: stats.byCategory[cat].cmj,
+              n: stats.byCategory[cat].n,
+              fill: EQUIPO_COLORS[cat] || "#94a3b8",
+            })),
+        ];
         const posiciones = ["Arquera", "Defensora", "Volante", "Delantera"] as const;
         const posicionData = posiciones.map((pos) => ({
           name: pos,
