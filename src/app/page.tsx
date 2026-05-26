@@ -201,10 +201,10 @@ export default function Dashboard() {
         return (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
             <p className="text-sm font-bold text-slate-800 mb-3">Promedio Yo-Yo (metros)</p>
-            <ResponsiveContainer width="100%" height={chartView === "equipos" ? 250 : 210}>
-              <BarChart data={chartData} barSize={chartView === "equipos" ? 18 : chartView === "division" ? 36 : 30}>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData} barSize={chartView === "equipos" ? 16 : 28}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: chartView === "equipos" ? 9 : 11, fontWeight: 600 }} axisLine={false} tickLine={false} angle={chartView === "equipos" ? -35 : 0} textAnchor={chartView === "equipos" ? "end" : "middle"} height={chartView === "equipos" ? 40 : 20} />
+                <XAxis dataKey="name" tick={{ fontSize: chartView === "equipos" ? 9 : 11, fontWeight: 600 }} axisLine={false} tickLine={false} angle={chartView === "equipos" ? -35 : 0} textAnchor={chartView === "equipos" ? "end" : "middle"} height={35} />
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={35} />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 12, border: "1px solid #e2e8f0" }}
