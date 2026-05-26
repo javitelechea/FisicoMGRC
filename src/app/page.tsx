@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { PlayersData, Player } from "@/types/player";
 import { loadPlayersData, sortedCategories, getCategoryColor } from "@/lib/data";
@@ -57,8 +57,11 @@ function AvgCard({ label, yoyo, cmj, n, color, accent }: AvgCardProps) {
   );
 }
 
+type ChartView = "division" | "sub";
+
 export default function Dashboard() {
   const [data, setData] = useState<PlayersData | null>(null);
+  const [chartView, setChartView] = useState<ChartView>("division");
 
   useEffect(() => {
     loadPlayersData().then(setData);
@@ -110,22 +113,43 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ===== GRAFICO PROMEDIOS ===== */}
+      {/* ===== GRAFICO PROMEDIOS CON TOGGLE ===== */}
       {(() => {
-        const chartData = [
+        const divisionData = [
           { name: "MGRC", yoyo: stats.total.yoyo, cmj: stats.total.cmj, n: stats.total.n, fill: "#3b82f6" },
           { name: "5ta", yoyo: stats.byDivision["5ta"].yoyo, cmj: stats.byDivision["5ta"].cmj, n: stats.byDivision["5ta"].n, fill: "#2563eb" },
           { name: "6ta", yoyo: stats.byDivision["6ta"].yoyo, cmj: stats.byDivision["6ta"].cmj, n: stats.byDivision["6ta"].n, fill: "#10b981" },
           { name: "7ma", yoyo: stats.byDivision["7ma"].yoyo, cmj: stats.byDivision["7ma"].cmj, n: stats.byDivision["7ma"].n, fill: "#8b5cf6" },
         ];
+        const subData = [
+          { name: "MGRC", yoyo: stats.total.yoyo, cmj: stats.total.cmj, n: stats.total.n, fill: "#3b82f6" },
+          { name: "Todas A", yoyo: stats.bySub["A"].yoyo, cmj: stats.bySub["A"].cmj, n: stats.bySub["A"].n, fill: "#2563eb" },
+          { name: "Todas B", yoyo: stats.bySub["B"].yoyo, cmj: stats.bySub["B"].cmj, n: stats.bySub["B"].n, fill: "#10b981" },
+          { name: "Todas C", yoyo: stats.bySub["C"].yoyo, cmj: stats.bySub["C"].cmj, n: stats.bySub["C"].n, fill: "#f59e0b" },
+          { name: "Todas D", yoyo: stats.bySub["D"].yoyo, cmj: stats.bySub["D"].cmj, n: stats.bySub["D"].n, fill: "#8b5cf6" },
+        ];
+        const chartData = chartView === "division" ? divisionData : subData;
+
         return (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-            <p className="text-sm font-bold text-slate-800 mb-1">Promedio Yo-Yo (metros)</p>
-            <p className="text-[11px] text-slate-400 mb-3">General vs. por division</p>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={chartData} barSize={36}>
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-sm font-bold text-slate-800">Promedio Yo-Yo (metros)</p>
+                <p className="text-[11px] text-slate-400">
+                  {chartView === "division" ? "General vs. por division" : "General vs. por sub-categoria"}
+                </p>
+              </div>
+              <button
+                onClick={() => setChartView(chartView === "division" ? "sub" : "division")}
+                className="px-3 py-1.5 bg-slate-100 rounded-full text-xs font-semibold text-slate-600 active:bg-slate-200 transition-colors"
+              >
+                {chartView === "division" ? "A B C D" : "5ta 6ta 7ma"}
+              </button>
+            </div>
+            <ResponsiveContainer width="100%" height={210}>
+              <BarChart data={chartData} barSize={chartView === "division" ? 36 : 30}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fontWeight: 600 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={35} />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 12, border: "1px solid #e2e8f0" }}
@@ -135,7 +159,7 @@ export default function Dashboard() {
                   }}
                   labelFormatter={(label) => {
                     const item = chartData.find((d) => d.name === label);
-                    return `${label === "MGRC" ? "Monte Grande" : `Division ${label}`} (${item?.n} jug.)`;
+                    return `${label} (${item?.n} jug.)`;
                   }}
                 />
                 <Bar dataKey="yoyo" radius={[8, 8, 0, 0]}>
@@ -146,28 +170,6 @@ export default function Dashboard() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            {stats.total.cmj > 0 && (
-              <>
-                <p className="text-sm font-bold text-slate-800 mt-4 mb-1">Promedio CMJ (cm)</p>
-                <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={chartData.filter((d) => d.cmj > 0)} barSize={36}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={35} />
-                    <Tooltip
-                      contentStyle={{ fontSize: 12, borderRadius: 12, border: "1px solid #e2e8f0" }}
-                      formatter={(value) => [`${value}cm`, "CMJ"]}
-                    />
-                    <Bar dataKey="cmj" radius={[8, 8, 0, 0]}>
-                      {chartData.filter((d) => d.cmj > 0).map((entry, i) => (
-                        <Cell key={i} fill={entry.fill} opacity={0.7} />
-                      ))}
-                      <LabelList dataKey="cmj" position="top" fontSize={11} fontWeight={700} formatter={(v) => `${v}cm`} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </>
-            )}
           </div>
         );
       })()}
