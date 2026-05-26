@@ -336,7 +336,7 @@ export default function Dashboard() {
               ))}
             </div>
             <div className="flex gap-1.5 mb-3">
-              {["todas", "Arquera", "Defensora", "Volante", "Delantera"].map((pos) => (
+              {["todas", "Defensora", "Volante", "Delantera"].map((pos) => (
                 <button
                   key={pos}
                   onClick={() => setDestPos(pos === "todas" ? "todas" : pos)}
