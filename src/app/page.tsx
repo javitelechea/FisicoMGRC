@@ -207,11 +207,14 @@ export default function Dashboard() {
             if (avg.yoyo <= 0 || playerYoyo <= 0) return null;
             const ratio = playerYoyo / avg.yoyo;
             if (ratio < THRESHOLD) return null;
+            const divAvg = p.division && stats.byDivision[p.division] ? stats.byDivision[p.division].yoyo : 0;
+            if (divAvg > 0 && playerYoyo < divAvg) return null;
             return {
               player: p,
               yoyo: playerYoyo,
               cmj: playerCmj,
               avgYoyo: avg.yoyo,
+              divAvg,
               pct: Math.round((ratio - 1) * 100),
             };
           })
