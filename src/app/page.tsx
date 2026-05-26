@@ -116,7 +116,7 @@ export default function Dashboard() {
     });
 
     const byPosition: Record<string, ReturnType<typeof calcAvg>> = {};
-    ["Arquera", "Defensora", "Volante", "Delantera"].forEach((pos) => {
+    ["Defensora", "Volante", "Delantera"].forEach((pos) => {
       byPosition[pos] = calcAvg(allPlayers.filter((p) => normalizePosition(p.position) === pos));
     });
 
@@ -180,7 +180,7 @@ export default function Dashboard() {
               fill: EQUIPO_COLORS[cat] || "#94a3b8",
             })),
         ];
-        const posiciones = ["Arquera", "Defensora", "Volante", "Delantera"] as const;
+        const posiciones = ["Defensora", "Volante", "Delantera"] as const;
         const posicionData = posiciones.map((pos) => ({
           name: pos,
           yoyo: stats.byPosition[pos].yoyo,
