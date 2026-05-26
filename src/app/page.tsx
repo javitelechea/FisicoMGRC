@@ -225,8 +225,8 @@ export default function Dashboard() {
                   <LabelList dataKey="yoyo" position="top" fontSize={11} fontWeight={700} formatter={(v: any) => `${v}m`} />
                 </Bar>
                 {chartView === "posicion" && (
-                  <Bar dataKey="objetivo" radius={[8, 8, 0, 0]} fill="#dc2626" opacity={0.2} name="Obj. Primera">
-                    <LabelList dataKey="objetivo" position="top" fontSize={9} fontWeight={600} fill="#b91c1c" formatter={(v: any) => v > 0 ? `${v}m` : ""} />
+                  <Bar dataKey="objetivo" radius={[8, 8, 0, 0]} fill="#facc15" name="Primera A">
+                    <LabelList dataKey="objetivo" position="top" fontSize={9} fontWeight={600} fill="#a16207" formatter={(v: any) => v > 0 ? `${v}m` : ""} />
                   </Bar>
                 )}
               </BarChart>
