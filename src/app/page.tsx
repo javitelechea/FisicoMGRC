@@ -229,7 +229,7 @@ export default function Dashboard() {
             });
         } else {
           filtered = allDestacadas
-            .filter((d) => d.player.category === destFilter && d.ratio >= THRESHOLD_CAT);
+            .filter((d) => d.player.division === destFilter && d.ratio >= THRESHOLD_CAT);
         }
 
         const destacadas = filtered
@@ -247,28 +247,18 @@ export default function Dashboard() {
               Destacadas
             </h2>
 
-            <div className="flex gap-1.5 overflow-x-auto pb-3 -mx-4 px-4 no-scrollbar">
-              <button
-                onClick={() => setDestFilter("club")}
-                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-colors ${
-                  destFilter === "club"
-                    ? "bg-red-600 text-white"
-                    : "bg-white text-neutral-500 border border-neutral-200"
-                }`}
-              >
-                Club
-              </button>
-              {stats.categories.map((cat) => (
+            <div className="flex gap-2 mb-3">
+              {["club", "5ta", "6ta", "7ma"].map((key) => (
                 <button
-                  key={cat}
-                  onClick={() => setDestFilter(cat)}
-                  className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-colors ${
-                    destFilter === cat
+                  key={key}
+                  onClick={() => setDestFilter(key)}
+                  className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                    destFilter === key
                       ? "bg-red-600 text-white"
-                      : "bg-white text-neutral-500 border border-neutral-200"
+                      : "bg-neutral-100 text-neutral-500 active:bg-neutral-200"
                   }`}
                 >
-                  {cat}
+                  {key === "club" ? "Club" : key}
                 </button>
               ))}
             </div>
@@ -282,9 +272,7 @@ export default function Dashboard() {
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                           <span className="text-xs font-bold text-neutral-400 w-4 shrink-0">{i + 1}</span>
                           <p className="text-xs font-semibold text-neutral-800 truncate">{d.player.name}</p>
-                          {destFilter === "club" && (
-                            <span className="text-[10px] text-neutral-400 shrink-0">{d.player.category}</span>
-                          )}
+                          <span className="text-[10px] text-neutral-400 shrink-0">{d.player.category}</span>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="text-xs font-bold text-neutral-700">{d.yoyo}m</span>
@@ -303,7 +291,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 text-center">
-                <p className="text-sm text-neutral-400">Sin destacadas en {destFilter === "club" ? "el club" : destFilter}</p>
+                <p className="text-sm text-neutral-400">Sin destacadas en {destFilter === "club" ? "el club" : `la ${destFilter}`}</p>
               </div>
             )}
           </>
