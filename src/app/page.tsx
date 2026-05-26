@@ -122,13 +122,11 @@ export default function Dashboard() {
       {/* ===== GRAFICO PROMEDIOS CON TOGGLE ===== */}
       {(() => {
         const divisionData = [
-          { name: "MGRC", yoyo: stats.total.yoyo, cmj: stats.total.cmj, n: stats.total.n, fill: "#3b82f6" },
           { name: "5ta", yoyo: stats.byDivision["5ta"].yoyo, cmj: stats.byDivision["5ta"].cmj, n: stats.byDivision["5ta"].n, fill: "#2563eb" },
           { name: "6ta", yoyo: stats.byDivision["6ta"].yoyo, cmj: stats.byDivision["6ta"].cmj, n: stats.byDivision["6ta"].n, fill: "#10b981" },
           { name: "7ma", yoyo: stats.byDivision["7ma"].yoyo, cmj: stats.byDivision["7ma"].cmj, n: stats.byDivision["7ma"].n, fill: "#8b5cf6" },
         ];
         const subData = [
-          { name: "MGRC", yoyo: stats.total.yoyo, cmj: stats.total.cmj, n: stats.total.n, fill: "#3b82f6" },
           { name: "Todas A", yoyo: stats.bySub["A"].yoyo, cmj: stats.bySub["A"].cmj, n: stats.bySub["A"].n, fill: "#2563eb" },
           { name: "Todas B", yoyo: stats.bySub["B"].yoyo, cmj: stats.bySub["B"].cmj, n: stats.bySub["B"].n, fill: "#10b981" },
           { name: "Todas C", yoyo: stats.bySub["C"].yoyo, cmj: stats.bySub["C"].cmj, n: stats.bySub["C"].n, fill: "#f59e0b" },
