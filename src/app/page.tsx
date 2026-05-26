@@ -86,6 +86,7 @@ export default function Dashboard() {
   const [primera, setPrimera] = useState<PrimeraData | null>(null);
   const [chartView, setChartView] = useState<ChartView>("division");
   const [destFilter, setDestFilter] = useState<string>("club");
+  const [destPos, setDestPos] = useState<string>("todas");
 
   useEffect(() => {
     loadPlayersData().then(setData);
@@ -260,25 +261,35 @@ export default function Dashboard() {
         const THRESHOLD_CLUB = 1.3;
         const THRESHOLD_CAT = 1.15;
 
+        const isPosFilt = destPos !== "todas";
+
         const allDestacadas = data.players
           .filter((p) => p.category && stats.byCategory[p.category])
           .map((p) => {
-            const avg = stats.byCategory[p.category!];
             const playerYoyo = p.tests.find((t) => t.yoyo?.meters)?.yoyo.meters || 0;
-            if (avg.yoyo <= 0 || playerYoyo <= 0) return null;
+            if (playerYoyo <= 0) return null;
+
+            const normPos = normalizePosition(p.position);
+
+            if (isPosFilt) {
+              if (normPos !== destPos) return null;
+              const primeraAvg = primera?.byPosition[destPos]?.avg_yoyo || 0;
+              if (primeraAvg <= 0) return null;
+              const pct = Math.round((playerYoyo / primeraAvg - 1) * 100);
+              return { player: p, yoyo: playerYoyo, pct, ratio: playerYoyo / primeraAvg, normPos };
+            }
+
+            const avg = stats.byCategory[p.category!];
+            if (avg.yoyo <= 0) return null;
             const ratio = playerYoyo / avg.yoyo;
-            return {
-              player: p,
-              yoyo: playerYoyo,
-              avgYoyo: avg.yoyo,
-              pct: Math.round((ratio - 1) * 100),
-              ratio,
-            };
+            return { player: p, yoyo: playerYoyo, pct: Math.round((ratio - 1) * 100), ratio, normPos };
           })
           .filter((d): d is NonNullable<typeof d> => d !== null);
 
         let filtered: typeof allDestacadas;
-        if (destFilter === "club") {
+        if (isPosFilt) {
+          filtered = allDestacadas.sort((a, b) => b.yoyo - a.yoyo);
+        } else if (destFilter === "club") {
           filtered = allDestacadas
             .filter((d) => {
               if (d.ratio < THRESHOLD_CLUB) return false;
@@ -292,10 +303,12 @@ export default function Dashboard() {
         }
 
         const destacadas = filtered
-          .sort((a, b) => b.pct - a.pct)
+          .sort((a, b) => isPosFilt ? b.yoyo - a.yoyo : b.pct - a.pct)
           .slice(0, 10);
 
-        const maxPct = destacadas[0]?.pct || 1;
+        const maxPct = isPosFilt
+          ? Math.max(...destacadas.map((d) => Math.abs(d.pct)), 1)
+          : (destacadas[0]?.pct || 1);
 
         return (
           <>
@@ -306,13 +319,13 @@ export default function Dashboard() {
               Destacadas
             </h2>
 
-            <div className="flex gap-2 mb-3">
+            <div className="flex gap-2 mb-2">
               {["club", "5ta", "6ta", "7ma"].map((key) => (
                 <button
                   key={key}
-                  onClick={() => setDestFilter(key)}
+                  onClick={() => { setDestFilter(key); setDestPos("todas"); }}
                   className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${
-                    destFilter === key
+                    destFilter === key && !isPosFilt
                       ? "bg-red-600 text-white"
                       : "bg-neutral-100 text-neutral-500 active:bg-neutral-200"
                   }`}
@@ -321,6 +334,27 @@ export default function Dashboard() {
                 </button>
               ))}
             </div>
+            <div className="flex gap-1.5 mb-3">
+              {["todas", "Arquera", "Defensora", "Volante", "Delantera"].map((pos) => (
+                <button
+                  key={pos}
+                  onClick={() => setDestPos(pos === "todas" ? "todas" : pos)}
+                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-semibold transition-colors ${
+                    destPos === pos
+                      ? "bg-amber-500 text-white"
+                      : "bg-neutral-100 text-neutral-400 active:bg-neutral-200"
+                  }`}
+                >
+                  {pos === "todas" ? "Todas" : pos.slice(0, 3)}
+                </button>
+              ))}
+            </div>
+
+            {isPosFilt && primera?.byPosition[destPos] && (
+              <p className="text-[10px] text-neutral-400 mb-2">
+                vs Primera A {destPos}: {primera.byPosition[destPos].avg_yoyo}m
+              </p>
+            )}
 
             {destacadas.length > 0 ? (
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
@@ -335,13 +369,19 @@ export default function Dashboard() {
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="text-xs font-bold text-neutral-700">{d.yoyo}m</span>
-                          <span className="text-[10px] font-bold text-red-600">+{d.pct}%</span>
+                          <span className={`text-[10px] font-bold ${d.pct >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                            {d.pct >= 0 ? "+" : ""}{d.pct}%
+                          </span>
                         </div>
                       </div>
                       <div className="w-full bg-neutral-100 rounded-full h-2.5">
                         <div
-                          className="h-2.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
-                          style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
+                          className={`h-2.5 rounded-full transition-all duration-500 ${
+                            isPosFilt
+                              ? d.pct >= 0 ? "bg-gradient-to-r from-emerald-400 to-emerald-500" : "bg-gradient-to-r from-red-400 to-red-500"
+                              : "bg-gradient-to-r from-red-500 to-red-600"
+                          }`}
+                          style={{ width: `${Math.max((Math.abs(d.pct) / maxPct) * 100, 10)}%` }}
                         />
                       </div>
                     </div>
