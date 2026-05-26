@@ -69,6 +69,7 @@ const EQUIPO_COLORS: Record<string, string> = {
 export default function Dashboard() {
   const [data, setData] = useState<PlayersData | null>(null);
   const [chartView, setChartView] = useState<ChartView>("division");
+  const [destFilter, setDestFilter] = useState<string>("club");
 
   useEffect(() => {
     loadPlayersData().then(setData);
@@ -197,69 +198,114 @@ export default function Dashboard() {
 
       {/* ===== DESTACADAS ===== */}
       {(() => {
-        const THRESHOLD = 1.3;
-        const destacadas = data.players
+        const THRESHOLD_CLUB = 1.3;
+        const THRESHOLD_CAT = 1.15;
+
+        const allDestacadas = data.players
           .filter((p) => p.category && stats.byCategory[p.category])
           .map((p) => {
             const avg = stats.byCategory[p.category!];
             const playerYoyo = p.tests.find((t) => t.yoyo?.meters)?.yoyo.meters || 0;
-            const playerCmj = p.tests.find((t) => t.cmj?.height)?.cmj.height || 0;
             if (avg.yoyo <= 0 || playerYoyo <= 0) return null;
             const ratio = playerYoyo / avg.yoyo;
-            if (ratio < THRESHOLD) return null;
-            const divAvg = p.division && stats.byDivision[p.division] ? stats.byDivision[p.division].yoyo : 0;
-            if (divAvg > 0 && playerYoyo < divAvg) return null;
             return {
               player: p,
               yoyo: playerYoyo,
-              cmj: playerCmj,
               avgYoyo: avg.yoyo,
-              divAvg,
               pct: Math.round((ratio - 1) * 100),
+              ratio,
             };
           })
-          .filter((d): d is NonNullable<typeof d> => d !== null)
+          .filter((d): d is NonNullable<typeof d> => d !== null);
+
+        let filtered: typeof allDestacadas;
+        if (destFilter === "club") {
+          filtered = allDestacadas
+            .filter((d) => {
+              if (d.ratio < THRESHOLD_CLUB) return false;
+              const div = d.player.division;
+              const divAvg = div && stats.byDivision[div] ? stats.byDivision[div].yoyo : 0;
+              return divAvg <= 0 || d.yoyo >= divAvg;
+            });
+        } else {
+          filtered = allDestacadas
+            .filter((d) => d.player.category === destFilter && d.ratio >= THRESHOLD_CAT);
+        }
+
+        const destacadas = filtered
           .sort((a, b) => b.pct - a.pct)
           .slice(0, 10);
-
-        if (destacadas.length === 0) return null;
 
         const maxPct = destacadas[0]?.pct || 1;
 
         return (
           <>
-            <h2 className="text-sm font-bold text-neutral-800 mt-6 mb-4 uppercase tracking-wider flex items-center gap-1.5">
+            <h2 className="text-sm font-bold text-neutral-800 mt-6 mb-3 uppercase tracking-wider flex items-center gap-1.5">
               <svg className="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
                 <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
               </svg>
               Destacadas
             </h2>
 
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
-              {destacadas.map((d, i) => (
-                <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
-                  <div className="active:scale-[0.98] transition-transform">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <span className="text-xs font-bold text-neutral-400 w-4 shrink-0">{i + 1}</span>
-                        <p className="text-xs font-semibold text-neutral-800 truncate">{d.player.name}</p>
-                        <span className="text-[10px] text-neutral-400 shrink-0">{d.player.category}</span>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs font-bold text-neutral-700">{d.yoyo}m</span>
-                        <span className="text-[10px] font-bold text-red-600">+{d.pct}%</span>
-                      </div>
-                    </div>
-                    <div className="w-full bg-neutral-100 rounded-full h-2.5">
-                      <div
-                        className="h-2.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
-                        style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
-                      />
-                    </div>
-                  </div>
-                </Link>
+            <div className="flex gap-1.5 overflow-x-auto pb-3 -mx-4 px-4 no-scrollbar">
+              <button
+                onClick={() => setDestFilter("club")}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-colors ${
+                  destFilter === "club"
+                    ? "bg-red-600 text-white"
+                    : "bg-white text-neutral-500 border border-neutral-200"
+                }`}
+              >
+                Club
+              </button>
+              {stats.categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setDestFilter(cat)}
+                  className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-colors ${
+                    destFilter === cat
+                      ? "bg-red-600 text-white"
+                      : "bg-white text-neutral-500 border border-neutral-200"
+                  }`}
+                >
+                  {cat}
+                </button>
               ))}
             </div>
+
+            {destacadas.length > 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
+                {destacadas.map((d, i) => (
+                  <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
+                    <div className="active:scale-[0.98] transition-transform">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-xs font-bold text-neutral-400 w-4 shrink-0">{i + 1}</span>
+                          <p className="text-xs font-semibold text-neutral-800 truncate">{d.player.name}</p>
+                          {destFilter === "club" && (
+                            <span className="text-[10px] text-neutral-400 shrink-0">{d.player.category}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs font-bold text-neutral-700">{d.yoyo}m</span>
+                          <span className="text-[10px] font-bold text-red-600">+{d.pct}%</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-neutral-100 rounded-full h-2.5">
+                        <div
+                          className="h-2.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
+                          style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 text-center">
+                <p className="text-sm text-neutral-400">Sin destacadas en {destFilter === "club" ? "el club" : destFilter}</p>
+              </div>
+            )}
           </>
         );
       })()}
