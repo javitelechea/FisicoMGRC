@@ -253,71 +253,7 @@ export default function Dashboard() {
         );
       })()}
 
-      {/* ===== PROMEDIO POR SUB (A, B, C, D) ===== */}
-      <h2 className="text-sm font-bold text-slate-700 mt-6 mb-2.5 uppercase tracking-wider">
-        Todas las A / B / C / D
-      </h2>
-      <div className="grid grid-cols-2 gap-2">
-        {(["A", "B", "C", "D"] as const).map((sub) => {
-          const s = stats.bySub[sub];
-          return (
-            <div key={sub} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-3.5">
-              <p className="text-xs font-bold text-slate-500">Todas las {sub}</p>
-              <p className="text-xl font-bold text-slate-900 mt-1">
-                {s.yoyo > 0 ? s.yoyo : "-"}<span className="text-xs font-normal text-slate-400 ml-0.5">{s.yoyo > 0 ? "m" : ""}</span>
-              </p>
-              {s.cmj > 0 && (
-                <p className="text-sm font-semibold text-slate-600">
-                  {s.cmj}<span className="text-[10px] font-normal text-slate-400 ml-0.5">cm CMJ</span>
-                </p>
-              )}
-              <p className="text-[10px] text-slate-400 mt-0.5">{s.n} testeadas</p>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* ===== PROMEDIO POR CATEGORIA ===== */}
-      <h2 className="text-sm font-bold text-slate-700 mt-6 mb-2.5 uppercase tracking-wider">
-        Por Categoria
-      </h2>
-      <div className="space-y-2">
-        {stats.categories.map((cat) => {
-          const s = stats.byCategory[cat];
-          const count = data.categories[cat]?.length || 0;
-
-          return (
-            <Link key={cat} href={`/categorias/${encodeURIComponent(cat)}`}>
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 active:scale-[0.98] transition-transform">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className={`w-2.5 h-2.5 rounded-full ${getCategoryColor(cat)}`} />
-                    <span className="font-semibold text-slate-900 text-sm">{cat}</span>
-                    <span className="text-[11px] text-slate-400">{count} jug.</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-slate-800">
-                        {s.yoyo > 0 ? `${s.yoyo}m` : "-"}
-                      </p>
-                      <p className="text-[10px] text-slate-400">Yo-Yo</p>
-                    </div>
-                    {s.cmj > 0 && (
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-slate-700">{s.cmj}cm</p>
-                        <p className="text-[10px] text-slate-400">CMJ</p>
-                      </div>
-                    )}
-                    <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+    
     </div>
   );
 }
