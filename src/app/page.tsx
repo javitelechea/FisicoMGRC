@@ -147,15 +147,7 @@ export default function Dashboard() {
 
         return (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-bold text-slate-800">Promedio Yo-Yo (metros)</p>
-              <button
-                onClick={() => setChartView(chartView === "division" ? "sub" : chartView === "sub" ? "equipos" : "division")}
-                className="px-3 py-1.5 bg-slate-100 rounded-full text-[11px] font-semibold text-slate-600 active:bg-slate-200 transition-colors"
-              >
-                {chartView === "division" ? "Ver A/B/C/D" : chartView === "sub" ? "Ver equipos" : "Ver divisiones"}
-              </button>
-            </div>
+            <p className="text-sm font-bold text-slate-800 mb-3">Promedio Yo-Yo (metros)</p>
             <ResponsiveContainer width="100%" height={chartView === "equipos" ? 250 : 210}>
               <BarChart data={chartData} barSize={chartView === "equipos" ? 18 : chartView === "division" ? 36 : 30}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -181,6 +173,25 @@ export default function Dashboard() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+            <div className="flex gap-2 mt-3">
+              {([
+                { key: "division" as ChartView, label: "5ta 6ta 7ma" },
+                { key: "sub" as ChartView, label: "A B C D" },
+                { key: "equipos" as ChartView, label: "Equipos" },
+              ]).map((btn) => (
+                <button
+                  key={btn.key}
+                  onClick={() => setChartView(btn.key)}
+                  className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                    chartView === btn.key
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-100 text-slate-500 active:bg-slate-200"
+                  }`}
+                >
+                  {btn.label}
+                </button>
+              ))}
+            </div>
           </div>
         );
       })()}
