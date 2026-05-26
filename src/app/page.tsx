@@ -224,16 +224,7 @@ export default function Dashboard() {
 
         if (destacadas.length === 0) return null;
 
-        const top3 = destacadas.slice(0, 3);
-        const rest = destacadas.slice(3);
         const maxPct = destacadas[0]?.pct || 1;
-
-        const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
-        const medalColors = ["from-neutral-700 to-neutral-800", "from-red-500 to-red-700", "from-neutral-500 to-neutral-600"];
-        const medalLabels = ["2do", "1ro", "3ro"];
-        const podiumHeights = ["h-20", "h-28", "h-16"];
-        const podiumBg = ["bg-neutral-100", "bg-red-50", "bg-neutral-50"];
-        const initials = (name: string) => name.split(" ").map((w) => w[0]).slice(0, 2).join("");
 
         return (
           <>
@@ -244,59 +235,31 @@ export default function Dashboard() {
               Destacadas
             </h2>
 
-            {/* Podio Top 3 */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 pb-2 mb-3">
-              <div className="flex items-end justify-center gap-2">
-                {podiumOrder.map((d, i) => {
-                  const originalIdx = i === 0 ? 1 : i === 1 ? 0 : 2;
-                  return (
-                    <Link key={d.player.id} href={`/jugadoras/${d.player.id}`} className="flex-1 max-w-[110px]">
-                      <div className="flex flex-col items-center active:scale-95 transition-transform">
-                        <div className={`${i === 1 ? "w-14 h-14 text-base ring-2 ring-red-400 ring-offset-2" : "w-11 h-11 text-xs"} rounded-full bg-gradient-to-br ${medalColors[i]} flex items-center justify-center text-white font-bold shadow-md mb-1`}>
-                          {initials(d.player.name)}
-                        </div>
-                        <p className="text-[10px] font-bold text-slate-800 text-center truncate w-full">{d.player.name.split(" ")[0]}</p>
-                        <p className="text-[9px] text-slate-400">{d.player.category}</p>
-                        <div className={`w-full ${podiumHeights[i]} ${podiumBg[i]} rounded-t-lg mt-1 flex flex-col items-center justify-center`}>
-                          <p className="text-lg font-extrabold text-slate-800">{d.yoyo}<span className="text-[9px] font-normal">m</span></p>
-                          <p className="text-[10px] font-bold text-red-600">+{d.pct}%</p>
-                          <p className="text-[8px] font-semibold text-slate-500 mt-0.5">{medalLabels[i]}</p>
-                        </div>
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
+              {destacadas.map((d, i) => (
+                <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
+                  <div className="active:scale-[0.98] transition-transform">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <span className="text-xs font-bold text-neutral-400 w-4 shrink-0">{i + 1}</span>
+                        <p className="text-xs font-semibold text-neutral-800 truncate">{d.player.name}</p>
+                        <span className="text-[10px] text-neutral-400 shrink-0">{d.player.category}</span>
                       </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Barras horizontales restantes */}
-            {rest.length > 0 && (
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
-                {rest.map((d, i) => (
-                  <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
-                    <div className="active:scale-[0.98] transition-transform">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <span className="text-xs font-bold text-slate-400 w-4 shrink-0">{i + 4}</span>
-                          <p className="text-xs font-semibold text-slate-800 truncate">{d.player.name}</p>
-                          <span className="text-[10px] text-slate-400 shrink-0">{d.player.category}</span>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-xs font-bold text-slate-700">{d.yoyo}m</span>
-                          <span className="text-[10px] font-bold text-red-600">+{d.pct}%</span>
-                        </div>
-                      </div>
-                      <div className="w-full bg-neutral-100 rounded-full h-2.5">
-                        <div
-                          className="h-2.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
-                          style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
-                        />
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs font-bold text-neutral-700">{d.yoyo}m</span>
+                        <span className="text-[10px] font-bold text-red-600">+{d.pct}%</span>
                       </div>
                     </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+                    <div className="w-full bg-neutral-100 rounded-full h-2.5">
+                      <div
+                        className="h-2.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
+                        style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
+                      />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </>
         );
       })()}
