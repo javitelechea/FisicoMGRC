@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { PlayersData, Player } from "@/types/player";
 import { loadPlayersData, sortedCategories, getCategoryColor } from "@/lib/data";
 import {
@@ -110,9 +111,7 @@ export default function Dashboard() {
     <div className="px-4 pt-6 pb-4">
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
-          MG
-        </div>
+        <Image src="/logo.png" alt="MGRC" width={36} height={36} className="rounded-lg" />
         <div>
           <h1 className="text-xl font-bold text-slate-900">FiscoMGRC</h1>
           <p className="text-xs text-slate-400">Temporada 2026</p>
@@ -222,33 +221,79 @@ export default function Dashboard() {
 
         if (destacadas.length === 0) return null;
 
+        const top3 = destacadas.slice(0, 3);
+        const rest = destacadas.slice(3);
+        const maxPct = destacadas[0]?.pct || 1;
+
+        const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
+        const medalColors = ["from-gray-300 to-gray-400", "from-amber-300 to-yellow-500", "from-amber-600 to-amber-700"];
+        const medalLabels = ["2do", "1ro", "3ro"];
+        const podiumHeights = ["h-20", "h-28", "h-16"];
+        const podiumBg = ["bg-slate-200", "bg-amber-100", "bg-orange-100"];
+        const initials = (name: string) => name.split(" ").map((w) => w[0]).slice(0, 2).join("");
+
         return (
           <>
-            <h2 className="text-sm font-bold text-slate-700 mt-6 mb-2.5 uppercase tracking-wider flex items-center gap-1.5">
+            <h2 className="text-sm font-bold text-slate-700 mt-6 mb-4 uppercase tracking-wider flex items-center gap-1.5">
               <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
                 <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
               </svg>
               Destacadas
             </h2>
-            <div className="space-y-2">
-              {destacadas.map((d) => (
-                <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
-                  <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-3.5 active:scale-[0.98] transition-transform flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-white font-semibold text-xs shrink-0">
-                      {d.player.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{d.player.name}</p>
-                      <p className="text-[11px] text-slate-400">{d.player.category} &middot; {d.player.position || "Sin pos."}</p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-sm font-bold text-slate-800">{d.yoyo}m</p>
-                      <p className="text-[10px] font-semibold text-emerald-500">+{d.pct}% vs prom.</p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+
+            {/* Podio Top 3 */}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 pb-2 mb-3">
+              <div className="flex items-end justify-center gap-2">
+                {podiumOrder.map((d, i) => {
+                  const originalIdx = i === 0 ? 1 : i === 1 ? 0 : 2;
+                  return (
+                    <Link key={d.player.id} href={`/jugadoras/${d.player.id}`} className="flex-1 max-w-[110px]">
+                      <div className="flex flex-col items-center active:scale-95 transition-transform">
+                        <div className={`${i === 1 ? "w-14 h-14 text-base ring-2 ring-amber-300 ring-offset-2" : "w-11 h-11 text-xs"} rounded-full bg-gradient-to-br ${medalColors[i]} flex items-center justify-center text-white font-bold shadow-md mb-1`}>
+                          {initials(d.player.name)}
+                        </div>
+                        <p className="text-[10px] font-bold text-slate-800 text-center truncate w-full">{d.player.name.split(" ")[0]}</p>
+                        <p className="text-[9px] text-slate-400">{d.player.category}</p>
+                        <div className={`w-full ${podiumHeights[i]} ${podiumBg[i]} rounded-t-lg mt-1 flex flex-col items-center justify-center`}>
+                          <p className="text-lg font-extrabold text-slate-800">{d.yoyo}<span className="text-[9px] font-normal">m</span></p>
+                          <p className="text-[10px] font-bold text-emerald-600">+{d.pct}%</p>
+                          <p className="text-[8px] font-semibold text-slate-500 mt-0.5">{medalLabels[i]}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
+
+            {/* Barras horizontales restantes */}
+            {rest.length > 0 && (
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
+                {rest.map((d, i) => (
+                  <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
+                    <div className="active:scale-[0.98] transition-transform">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-xs font-bold text-slate-400 w-4 shrink-0">{i + 4}</span>
+                          <p className="text-xs font-semibold text-slate-800 truncate">{d.player.name}</p>
+                          <span className="text-[10px] text-slate-400 shrink-0">{d.player.category}</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs font-bold text-slate-700">{d.yoyo}m</span>
+                          <span className="text-[10px] font-bold text-emerald-600">+{d.pct}%</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-2.5">
+                        <div
+                          className="h-2.5 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+                          style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </>
         );
       })()}
