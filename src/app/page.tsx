@@ -219,17 +219,17 @@ export default function Dashboard() {
                     return `${displayName} (${item?.n} jug.)`;
                   }}
                 />
-                <Bar dataKey="yoyo" radius={[8, 8, 0, 0]} name="Juveniles">
-                  {chartData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} />
-                  ))}
-                  <LabelList dataKey="yoyo" position="top" fontSize={11} fontWeight={700} formatter={(v: any) => `${v}m`} />
-                </Bar>
                 <Bar dataKey="objetivo" radius={[8, 8, 0, 0]} name="Primera A" hide={chartView !== "posicion"}>
                   {chartData.map((_, i) => (
                     <Cell key={i} fill="#facc15" />
                   ))}
                   <LabelList dataKey="objetivo" position="top" fontSize={9} fontWeight={600} fill="#a16207" formatter={(v: any) => v > 0 ? `${v}m` : ""} />
+                </Bar>
+                <Bar dataKey="yoyo" radius={[8, 8, 0, 0]} name="Juveniles">
+                  {chartData.map((entry, i) => (
+                    <Cell key={i} fill={entry.fill} />
+                  ))}
+                  <LabelList dataKey="yoyo" position="top" fontSize={11} fontWeight={700} formatter={(v: any) => `${v}m`} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
