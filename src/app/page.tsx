@@ -58,7 +58,17 @@ function AvgCard({ label, yoyo, cmj, n, color, accent }: AvgCardProps) {
   );
 }
 
-type ChartView = "division" | "sub" | "equipos";
+type ChartView = "division" | "sub" | "equipos" | "posicion";
+
+function normalizePosition(pos: string | null): string | null {
+  if (!pos) return null;
+  const p = pos.toUpperCase().trim();
+  if (p.startsWith("ARQ")) return "Arquera";
+  if (p.startsWith("DEF") || p === "DEFENDORA LATERAL") return "Defensora";
+  if (p.startsWith("VOL") || p === "VOL./DEL") return "Volante";
+  if (p.startsWith("DEL") || p === "DL" || p === "DELANTERA") return "Delantera";
+  return null;
+}
 
 const EQUIPO_COLORS: Record<string, string> = {
   "5ta A": "#dc2626", "5ta B": "#ef4444", "5ta C": "#f87171", "5ta D": "#fca5a5",
@@ -97,7 +107,12 @@ export default function Dashboard() {
       byCategory[cat] = calcAvg(allPlayers.filter((p) => p.category === cat));
     });
 
-    return { total, byDivision, bySub, byCategory, categories };
+    const byPosition: Record<string, ReturnType<typeof calcAvg>> = {};
+    ["Arquera", "Defensora", "Volante", "Delantera"].forEach((pos) => {
+      byPosition[pos] = calcAvg(allPlayers.filter((p) => normalizePosition(p.position) === pos));
+    });
+
+    return { total, byDivision, bySub, byCategory, byPosition, categories };
   }, [data]);
 
   if (!data || !stats) {
@@ -143,7 +158,13 @@ export default function Dashboard() {
             n: stats.byCategory[cat].n,
             fill: EQUIPO_COLORS[cat] || "#94a3b8",
           }));
-        const chartData = chartView === "division" ? divisionData : chartView === "sub" ? subData : equiposData;
+        const posicionData = [
+          { name: "Arquera", yoyo: stats.byPosition["Arquera"].yoyo, cmj: stats.byPosition["Arquera"].cmj, n: stats.byPosition["Arquera"].n, fill: "#dc2626" },
+          { name: "Defensora", yoyo: stats.byPosition["Defensora"].yoyo, cmj: stats.byPosition["Defensora"].cmj, n: stats.byPosition["Defensora"].n, fill: "#111111" },
+          { name: "Volante", yoyo: stats.byPosition["Volante"].yoyo, cmj: stats.byPosition["Volante"].cmj, n: stats.byPosition["Volante"].n, fill: "#ef4444" },
+          { name: "Delantera", yoyo: stats.byPosition["Delantera"].yoyo, cmj: stats.byPosition["Delantera"].cmj, n: stats.byPosition["Delantera"].n, fill: "#374151" },
+        ];
+        const chartData = chartView === "division" ? divisionData : chartView === "sub" ? subData : chartView === "posicion" ? posicionData : equiposData;
 
         return (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
@@ -178,6 +199,7 @@ export default function Dashboard() {
                 { key: "division" as ChartView, label: "5ta 6ta 7ma" },
                 { key: "sub" as ChartView, label: "A B C D" },
                 { key: "equipos" as ChartView, label: "Equipos" },
+                { key: "posicion" as ChartView, label: "Posición" },
               ]).map((btn) => (
                 <button
                   key={btn.key}
