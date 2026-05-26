@@ -36,7 +36,7 @@ export default function JugadorasPage() {
   if (!data) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function JugadorasPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar jugadora..."
-          className="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+          className="w-full pl-10 pr-10 py-3 bg-white border border-neutral-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent shadow-sm"
         />
         {search && (
           <button
@@ -80,8 +80,8 @@ export default function JugadorasPage() {
           onClick={() => setSelectedCategory("all")}
           className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
             selectedCategory === "all"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-slate-600 border border-slate-200"
+              ? "bg-red-600 text-white"
+              : "bg-white text-neutral-600 border border-neutral-200"
           }`}
         >
           Todas
@@ -92,8 +92,8 @@ export default function JugadorasPage() {
             onClick={() => setSelectedCategory(cat)}
             className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
               selectedCategory === cat
-                ? "bg-blue-600 text-white"
-                : "bg-white text-slate-600 border border-slate-200"
+                ? "bg-red-600 text-white"
+                : "bg-white text-neutral-600 border border-neutral-200"
             }`}
           >
             {cat}

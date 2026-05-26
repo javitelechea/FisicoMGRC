@@ -25,7 +25,7 @@ export default function PlayerProfilePage() {
   if (!data || !player) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -48,7 +48,7 @@ export default function PlayerProfilePage() {
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-5">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-neutral-900 flex items-center justify-center text-white font-bold text-lg shrink-0">
           {player.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
         </div>
         <div className="min-w-0">
@@ -77,13 +77,13 @@ export default function PlayerProfilePage() {
           </p>
           <div className="grid grid-cols-2 gap-2.5">
             {latestTest.yoyo?.meters && (
-              <div className="bg-blue-50 rounded-2xl p-3.5">
-                <p className="text-[11px] text-blue-500 font-semibold uppercase tracking-wider">Yo-Yo</p>
-                <p className="text-xl font-bold text-blue-700 mt-0.5">
+              <div className="bg-red-50 rounded-2xl p-3.5">
+                <p className="text-[11px] text-red-600 font-semibold uppercase tracking-wider">Yo-Yo</p>
+                <p className="text-xl font-bold text-red-700 mt-0.5">
                   {latestTest.yoyo.meters}<span className="text-sm font-normal ml-0.5">m</span>
                 </p>
                 {latestTest.yoyo.level && (
-                  <p className="text-[11px] text-blue-400">Nivel {latestTest.yoyo.level}</p>
+                  <p className="text-[11px] text-red-400">Nivel {latestTest.yoyo.level}</p>
                 )}
               </div>
             )}
@@ -180,7 +180,7 @@ export default function PlayerProfilePage() {
           <p className="text-slate-500 text-sm">Sin datos registrados</p>
           <Link
             href="/cargar"
-            className="inline-block mt-3 px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium active:bg-blue-700"
+            className="inline-block mt-3 px-5 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium active:bg-red-700"
           >
             Cargar datos
           </Link>

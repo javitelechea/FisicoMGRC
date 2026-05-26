@@ -59,9 +59,9 @@ function buildMonthlyData(
 }
 
 const YEAR_COLORS: Record<string, string> = {
-  "2024": "#94a3b8",
-  "2025": "#3b82f6",
-  "2026": "#10b981",
+  "2024": "#9ca3af",
+  "2025": "#111111",
+  "2026": "#dc2626",
 };
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {

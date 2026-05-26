@@ -69,7 +69,7 @@ export function BottomNav() {
   if (isPlayerProfile || isCategoryDetail) return null;
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 bg-white/80 backdrop-blur-xl border-t border-slate-200 safe-area-bottom">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 bg-neutral-950/95 backdrop-blur-xl border-t border-neutral-800 safe-area-bottom">
       <div className="flex items-stretch justify-around">
         {tabs.map((tab) => {
           const isActive =
@@ -82,11 +82,11 @@ export function BottomNav() {
               key={tab.href}
               href={tab.href}
               className={`flex flex-col items-center justify-center gap-0.5 py-2 px-3 flex-1 transition-colors ${
-                isActive ? "text-blue-600" : "text-slate-400"
+                isActive ? "text-red-500" : "text-neutral-500"
               }`}
             >
               {tab.icon(isActive)}
-              <span className={`text-[10px] font-medium ${isActive ? "text-blue-600" : "text-slate-400"}`}>
+              <span className={`text-[10px] font-medium ${isActive ? "text-red-500" : "text-neutral-500"}`}>
                 {tab.label}
               </span>
             </Link>

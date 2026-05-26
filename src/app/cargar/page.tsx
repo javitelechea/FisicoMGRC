@@ -96,7 +96,7 @@ export default function CargarDatosPage() {
   if (!data) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -144,7 +144,7 @@ export default function CargarDatosPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setShowDropdown(true); setSelectedPlayer(null); }}
                 placeholder="Buscar existente..."
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
               />
               {showDropdown && searchResults.length > 0 && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-lg mt-1 z-10 max-h-48 overflow-y-auto">
@@ -163,13 +163,13 @@ export default function CargarDatosPage() {
             </div>
 
             {selectedPlayer && (
-              <div className="mt-2.5 bg-blue-50 rounded-xl p-3 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-semibold">
+              <div className="mt-2.5 bg-red-50 rounded-xl p-3 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white text-xs font-semibold">
                   {selectedPlayer.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-blue-800">{selectedPlayer.name}</p>
-                  <p className="text-[11px] text-blue-500">{selectedPlayer.category} {selectedPlayer.position && `- ${selectedPlayer.position}`}</p>
+                  <p className="text-sm font-semibold text-red-800">{selectedPlayer.name}</p>
+                  <p className="text-[11px] text-red-500">{selectedPlayer.category} {selectedPlayer.position && `- ${selectedPlayer.position}`}</p>
                 </div>
               </div>
             )}
@@ -178,16 +178,16 @@ export default function CargarDatosPage() {
               <p className="text-[11px] text-slate-400 mb-2 uppercase tracking-wider font-medium">O crear nueva</p>
               <div className="grid grid-cols-2 gap-2">
                 <input type="text" value={newPlayerName} onChange={(e) => { setNewPlayerName(e.target.value); setSelectedPlayer(null); }}
-                  placeholder="Nombre" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  placeholder="Nombre" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                 <select value={newPlayerCategory} onChange={(e) => setNewPlayerCategory(e.target.value)}
-                  className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
                   <option value="">Categoria</option>
                   {categories.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
                 <input type="text" value={newPlayerPosition} onChange={(e) => setNewPlayerPosition(e.target.value)}
-                  placeholder="Posicion" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  placeholder="Posicion" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                 <input type="number" value={newPlayerAge} onChange={(e) => setNewPlayerAge(e.target.value)}
-                  placeholder="Edad" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  placeholder="Edad" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
               </div>
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function CargarDatosPage() {
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-semibold text-slate-800">Test</p>
               <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)}
-                className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500" />
             </div>
 
             <div className="space-y-3">
@@ -205,33 +205,33 @@ export default function CargarDatosPage() {
                 <p className="text-xs font-medium text-slate-500 mb-1.5">Yo-Yo IR N1</p>
                 <div className="grid grid-cols-2 gap-2">
                   <input type="number" step="0.1" value={yoyoLevel} onChange={(e) => setYoyoLevel(e.target.value)}
-                    placeholder="Nivel (14.5)" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Nivel (14.5)" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                   <input type="number" value={yoyoMeters} onChange={(e) => setYoyoMeters(e.target.value)}
-                    placeholder="Metros (680)" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Metros (680)" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                 </div>
               </div>
 
               <div>
                 <p className="text-xs font-medium text-slate-500 mb-1.5">CMJ</p>
                 <input type="number" step="0.1" value={cmjHeight} onChange={(e) => setCmjHeight(e.target.value)}
-                  placeholder="Altura cm (28.5)" className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  placeholder="Altura cm (28.5)" className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
               </div>
 
               <div>
                 <p className="text-xs font-medium text-slate-500 mb-1.5">Fuerza 4MR</p>
                 <div className="grid grid-cols-2 gap-2">
                   <input type="number" step="0.1" value={peso} onChange={(e) => setPeso(e.target.value)}
-                    placeholder="Peso kg" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Peso kg" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                   <input type="number" step="0.1" value={pressPecho} onChange={(e) => setPressPecho(e.target.value)}
-                    placeholder="Press Pecho" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Press Pecho" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                   <input type="number" step="0.1" value={dorsalRemo} onChange={(e) => setDorsalRemo(e.target.value)}
-                    placeholder="Dorsal Remo" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Dorsal Remo" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                   <input type="number" step="0.1" value={sentadilla} onChange={(e) => setSentadilla(e.target.value)}
-                    placeholder="Sentadilla" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Sentadilla" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                   <input type="number" step="0.1" value={hamstring} onChange={(e) => setHamstring(e.target.value)}
-                    placeholder="Hamstring" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Hamstring" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                   <input type="number" step="0.1" value={pivotPress} onChange={(e) => setPivotPress(e.target.value)}
-                    placeholder="Pivot Press" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    placeholder="Pivot Press" className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" />
                 </div>
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function CargarDatosPage() {
             <button
               onClick={handleSaveTest}
               disabled={!selectedPlayer && !newPlayerName}
-              className="mt-4 w-full py-3 bg-blue-600 text-white rounded-2xl text-sm font-semibold active:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="mt-4 w-full py-3 bg-red-600 text-white rounded-2xl text-sm font-semibold active:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Guardar Test
             </button>
@@ -251,11 +251,11 @@ export default function CargarDatosPage() {
         <div className="space-y-4">
           <label className="block cursor-pointer">
             <div className="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-10 text-center active:border-blue-400 transition-colors">
-              <svg className="w-10 h-10 mx-auto text-slate-400 mb-3" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
+              <svg className="w-10 h-10 mx-auto text-red-400 mb-3" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
-              <p className="text-sm font-semibold text-slate-700 mb-0.5">Seleccionar archivo</p>
-              <p className="text-xs text-slate-400">.xlsx o .docx</p>
+              <p className="text-sm font-semibold text-neutral-700 mb-0.5">Seleccionar archivo</p>
+              <p className="text-xs text-neutral-400">.xlsx o .docx</p>
             </div>
             <input type="file" accept=".xlsx,.docx" onChange={handleFileUpload} className="hidden" />
           </label>

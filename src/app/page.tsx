@@ -61,9 +61,9 @@ function AvgCard({ label, yoyo, cmj, n, color, accent }: AvgCardProps) {
 type ChartView = "division" | "sub" | "equipos";
 
 const EQUIPO_COLORS: Record<string, string> = {
-  "5ta A": "#1d4ed8", "5ta B": "#3b82f6", "5ta C": "#60a5fa", "5ta D": "#93c5fd",
-  "6ta A": "#047857", "6ta B": "#10b981", "6ta C": "#34d399", "6ta D": "#6ee7b7",
-  "7ma A": "#7c3aed", "7ma B": "#8b5cf6", "7ma C": "#a78bfa", "7ma D": "#c4b5fd",
+  "5ta A": "#dc2626", "5ta B": "#ef4444", "5ta C": "#f87171", "5ta D": "#fca5a5",
+  "6ta A": "#111111", "6ta B": "#374151", "6ta C": "#6b7280", "6ta D": "#9ca3af",
+  "7ma A": "#991b1b", "7ma B": "#b91c1c", "7ma C": "#dc2626", "7ma D": "#ef4444",
 };
 
 export default function Dashboard() {
@@ -102,7 +102,7 @@ export default function Dashboard() {
   if (!data || !stats) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -121,15 +121,15 @@ export default function Dashboard() {
       {/* ===== GRAFICO PROMEDIOS CON TOGGLE ===== */}
       {(() => {
         const divisionData = [
-          { name: "5ta", yoyo: stats.byDivision["5ta"].yoyo, cmj: stats.byDivision["5ta"].cmj, n: stats.byDivision["5ta"].n, fill: "#2563eb" },
-          { name: "6ta", yoyo: stats.byDivision["6ta"].yoyo, cmj: stats.byDivision["6ta"].cmj, n: stats.byDivision["6ta"].n, fill: "#10b981" },
-          { name: "7ma", yoyo: stats.byDivision["7ma"].yoyo, cmj: stats.byDivision["7ma"].cmj, n: stats.byDivision["7ma"].n, fill: "#8b5cf6" },
+          { name: "5ta", yoyo: stats.byDivision["5ta"].yoyo, cmj: stats.byDivision["5ta"].cmj, n: stats.byDivision["5ta"].n, fill: "#dc2626" },
+          { name: "6ta", yoyo: stats.byDivision["6ta"].yoyo, cmj: stats.byDivision["6ta"].cmj, n: stats.byDivision["6ta"].n, fill: "#111111" },
+          { name: "7ma", yoyo: stats.byDivision["7ma"].yoyo, cmj: stats.byDivision["7ma"].cmj, n: stats.byDivision["7ma"].n, fill: "#991b1b" },
         ];
         const subData = [
-          { name: "Todas A", yoyo: stats.bySub["A"].yoyo, cmj: stats.bySub["A"].cmj, n: stats.bySub["A"].n, fill: "#2563eb" },
-          { name: "Todas B", yoyo: stats.bySub["B"].yoyo, cmj: stats.bySub["B"].cmj, n: stats.bySub["B"].n, fill: "#10b981" },
-          { name: "Todas C", yoyo: stats.bySub["C"].yoyo, cmj: stats.bySub["C"].cmj, n: stats.bySub["C"].n, fill: "#f59e0b" },
-          { name: "Todas D", yoyo: stats.bySub["D"].yoyo, cmj: stats.bySub["D"].cmj, n: stats.bySub["D"].n, fill: "#8b5cf6" },
+          { name: "Todas A", yoyo: stats.bySub["A"].yoyo, cmj: stats.bySub["A"].cmj, n: stats.bySub["A"].n, fill: "#dc2626" },
+          { name: "Todas B", yoyo: stats.bySub["B"].yoyo, cmj: stats.bySub["B"].cmj, n: stats.bySub["B"].n, fill: "#111111" },
+          { name: "Todas C", yoyo: stats.bySub["C"].yoyo, cmj: stats.bySub["C"].cmj, n: stats.bySub["C"].n, fill: "#ef4444" },
+          { name: "Todas D", yoyo: stats.bySub["D"].yoyo, cmj: stats.bySub["D"].cmj, n: stats.bySub["D"].n, fill: "#374151" },
         ];
         const equipoOrder = ["5ta A","5ta B","5ta C","5ta D","6ta A","6ta B","6ta C","6ta D","7ma A","7ma B","7ma C","7ma D"];
         const equiposData = equipoOrder
@@ -183,8 +183,8 @@ export default function Dashboard() {
                   onClick={() => setChartView(btn.key)}
                   className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${
                     chartView === btn.key
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-100 text-slate-500 active:bg-slate-200"
+                      ? "bg-red-600 text-white"
+                      : "bg-neutral-100 text-neutral-500 active:bg-neutral-200"
                   }`}
                 >
                   {btn.label}
@@ -226,16 +226,16 @@ export default function Dashboard() {
         const maxPct = destacadas[0]?.pct || 1;
 
         const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
-        const medalColors = ["from-gray-300 to-gray-400", "from-amber-300 to-yellow-500", "from-amber-600 to-amber-700"];
+        const medalColors = ["from-neutral-700 to-neutral-800", "from-red-500 to-red-700", "from-neutral-500 to-neutral-600"];
         const medalLabels = ["2do", "1ro", "3ro"];
         const podiumHeights = ["h-20", "h-28", "h-16"];
-        const podiumBg = ["bg-slate-200", "bg-amber-100", "bg-orange-100"];
+        const podiumBg = ["bg-neutral-100", "bg-red-50", "bg-neutral-50"];
         const initials = (name: string) => name.split(" ").map((w) => w[0]).slice(0, 2).join("");
 
         return (
           <>
-            <h2 className="text-sm font-bold text-slate-700 mt-6 mb-4 uppercase tracking-wider flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+            <h2 className="text-sm font-bold text-neutral-800 mt-6 mb-4 uppercase tracking-wider flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
                 <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
               </svg>
               Destacadas
@@ -249,14 +249,14 @@ export default function Dashboard() {
                   return (
                     <Link key={d.player.id} href={`/jugadoras/${d.player.id}`} className="flex-1 max-w-[110px]">
                       <div className="flex flex-col items-center active:scale-95 transition-transform">
-                        <div className={`${i === 1 ? "w-14 h-14 text-base ring-2 ring-amber-300 ring-offset-2" : "w-11 h-11 text-xs"} rounded-full bg-gradient-to-br ${medalColors[i]} flex items-center justify-center text-white font-bold shadow-md mb-1`}>
+                        <div className={`${i === 1 ? "w-14 h-14 text-base ring-2 ring-red-400 ring-offset-2" : "w-11 h-11 text-xs"} rounded-full bg-gradient-to-br ${medalColors[i]} flex items-center justify-center text-white font-bold shadow-md mb-1`}>
                           {initials(d.player.name)}
                         </div>
                         <p className="text-[10px] font-bold text-slate-800 text-center truncate w-full">{d.player.name.split(" ")[0]}</p>
                         <p className="text-[9px] text-slate-400">{d.player.category}</p>
                         <div className={`w-full ${podiumHeights[i]} ${podiumBg[i]} rounded-t-lg mt-1 flex flex-col items-center justify-center`}>
                           <p className="text-lg font-extrabold text-slate-800">{d.yoyo}<span className="text-[9px] font-normal">m</span></p>
-                          <p className="text-[10px] font-bold text-emerald-600">+{d.pct}%</p>
+                          <p className="text-[10px] font-bold text-red-600">+{d.pct}%</p>
                           <p className="text-[8px] font-semibold text-slate-500 mt-0.5">{medalLabels[i]}</p>
                         </div>
                       </div>
@@ -280,12 +280,12 @@ export default function Dashboard() {
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="text-xs font-bold text-slate-700">{d.yoyo}m</span>
-                          <span className="text-[10px] font-bold text-emerald-600">+{d.pct}%</span>
+                          <span className="text-[10px] font-bold text-red-600">+{d.pct}%</span>
                         </div>
                       </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2.5">
+                      <div className="w-full bg-neutral-100 rounded-full h-2.5">
                         <div
-                          className="h-2.5 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+                          className="h-2.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
                           style={{ width: `${Math.max((d.pct / maxPct) * 100, 10)}%` }}
                         />
                       </div>

@@ -45,7 +45,7 @@ export default function CategoryDetailPage() {
   if (!data) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -96,7 +96,7 @@ export default function CategoryDetailPage() {
               />
               <Bar dataKey="meters" radius={[0, 4, 4, 0]}>
                 {yoyoData.map((_, index) => (
-                  <Cell key={index} fill={index < 3 ? "#3b82f6" : index < yoyoData.length * 0.5 ? "#60a5fa" : "#93c5fd"} />
+                  <Cell key={index} fill={index < 3 ? "#dc2626" : index < yoyoData.length * 0.5 ? "#ef4444" : "#fca5a5"} />
                 ))}
               </Bar>
             </BarChart>
@@ -112,8 +112,8 @@ export default function CategoryDetailPage() {
             onClick={() => setSortBy(s)}
             className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
               sortBy === s
-                ? "bg-blue-600 text-white"
-                : "bg-white text-slate-500 border border-slate-200"
+                ? "bg-red-600 text-white"
+                : "bg-white text-neutral-500 border border-neutral-200"
             }`}
           >
             {s === "name" ? "Nombre" : s === "yoyo" ? "Yo-Yo" : "CMJ"}

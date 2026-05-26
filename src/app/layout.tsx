@@ -38,7 +38,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#1e40af",
+  themeColor: "#111111",
 };
 
 export default function RootLayout({
@@ -48,8 +48,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="h-full bg-slate-200">
-        <div className="max-w-md mx-auto min-h-full bg-slate-50 shadow-2xl pb-16">
+      <body className="h-full bg-neutral-900">
+        <div className="max-w-md mx-auto min-h-full bg-neutral-50 shadow-2xl pb-16">
           {children}
         </div>
         <BottomNav />
