@@ -185,6 +185,63 @@ export default function Dashboard() {
         );
       })()}
 
+      {/* ===== DESTACADAS ===== */}
+      {(() => {
+        const THRESHOLD = 1.3;
+        const destacadas = data.players
+          .filter((p) => p.category && stats.byCategory[p.category])
+          .map((p) => {
+            const avg = stats.byCategory[p.category!];
+            const playerYoyo = p.tests.find((t) => t.yoyo?.meters)?.yoyo.meters || 0;
+            const playerCmj = p.tests.find((t) => t.cmj?.height)?.cmj.height || 0;
+            if (avg.yoyo <= 0 || playerYoyo <= 0) return null;
+            const ratio = playerYoyo / avg.yoyo;
+            if (ratio < THRESHOLD) return null;
+            return {
+              player: p,
+              yoyo: playerYoyo,
+              cmj: playerCmj,
+              avgYoyo: avg.yoyo,
+              pct: Math.round((ratio - 1) * 100),
+            };
+          })
+          .filter((d): d is NonNullable<typeof d> => d !== null)
+          .sort((a, b) => b.pct - a.pct)
+          .slice(0, 10);
+
+        if (destacadas.length === 0) return null;
+
+        return (
+          <>
+            <h2 className="text-sm font-bold text-slate-700 mt-6 mb-2.5 uppercase tracking-wider flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
+              </svg>
+              Destacadas
+            </h2>
+            <div className="space-y-2">
+              {destacadas.map((d) => (
+                <Link key={d.player.id} href={`/jugadoras/${d.player.id}`}>
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-3.5 active:scale-[0.98] transition-transform flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-white font-semibold text-xs shrink-0">
+                      {d.player.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{d.player.name}</p>
+                      <p className="text-[11px] text-slate-400">{d.player.category} &middot; {d.player.position || "Sin pos."}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-bold text-slate-800">{d.yoyo}m</p>
+                      <p className="text-[10px] font-semibold text-emerald-500">+{d.pct}% vs prom.</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </>
+        );
+      })()}
+
       {/* ===== PROMEDIO POR SUB (A, B, C, D) ===== */}
       <h2 className="text-sm font-bold text-slate-700 mt-6 mb-2.5 uppercase tracking-wider">
         Todas las A / B / C / D
