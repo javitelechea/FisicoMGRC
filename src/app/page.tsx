@@ -186,7 +186,7 @@ export default function Dashboard() {
           cmj: stats.byPosition[pos].cmj,
           objetivo: primera?.byPosition[pos]?.avg_yoyo || 0,
           n: stats.byPosition[pos].n,
-          fill: pos === "Arquera" ? "#dc2626" : pos === "Defensora" ? "#111111" : pos === "Volante" ? "#ef4444" : "#374151",
+          fill: "#dc2626",
         }));
         const divSubEquipoData = [...divisionData, ...subData, ...equiposData].map((d) => ({ ...d, objetivo: 0 }));
         const allChartData = {
