@@ -57,7 +57,13 @@ function AvgCard({ label, yoyo, cmj, n, color, accent }: AvgCardProps) {
   );
 }
 
-type ChartView = "division" | "sub";
+type ChartView = "division" | "sub" | "equipos";
+
+const EQUIPO_COLORS: Record<string, string> = {
+  "5ta A": "#1d4ed8", "5ta B": "#3b82f6", "5ta C": "#60a5fa", "5ta D": "#93c5fd",
+  "6ta A": "#047857", "6ta B": "#10b981", "6ta C": "#34d399", "6ta D": "#6ee7b7",
+  "7ma A": "#7c3aed", "7ma B": "#8b5cf6", "7ma C": "#a78bfa", "7ma D": "#c4b5fd",
+};
 
 export default function Dashboard() {
   const [data, setData] = useState<PlayersData | null>(null);
@@ -128,28 +134,34 @@ export default function Dashboard() {
           { name: "Todas C", yoyo: stats.bySub["C"].yoyo, cmj: stats.bySub["C"].cmj, n: stats.bySub["C"].n, fill: "#f59e0b" },
           { name: "Todas D", yoyo: stats.bySub["D"].yoyo, cmj: stats.bySub["D"].cmj, n: stats.bySub["D"].n, fill: "#8b5cf6" },
         ];
-        const chartData = chartView === "division" ? divisionData : subData;
+        const equipoOrder = ["5ta A","5ta B","5ta C","5ta D","6ta A","6ta B","6ta C","6ta D","7ma A","7ma B","7ma C","7ma D"];
+        const equiposData = equipoOrder
+          .filter((cat) => stats.byCategory[cat])
+          .map((cat) => ({
+            name: cat.replace("ta ", "").replace("ma ", ""),
+            fullName: cat,
+            yoyo: stats.byCategory[cat].yoyo,
+            cmj: stats.byCategory[cat].cmj,
+            n: stats.byCategory[cat].n,
+            fill: EQUIPO_COLORS[cat] || "#94a3b8",
+          }));
+        const chartData = chartView === "division" ? divisionData : chartView === "sub" ? subData : equiposData;
 
         return (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
             <div className="flex items-center justify-between mb-3">
-              <div>
-                <p className="text-sm font-bold text-slate-800">Promedio Yo-Yo (metros)</p>
-                <p className="text-[11px] text-slate-400">
-                  {chartView === "division" ? "General vs. por division" : "General vs. por sub-categoria"}
-                </p>
-              </div>
+              <p className="text-sm font-bold text-slate-800">Promedio Yo-Yo (metros)</p>
               <button
-                onClick={() => setChartView(chartView === "division" ? "sub" : "division")}
-                className="px-3 py-1.5 bg-slate-100 rounded-full text-xs font-semibold text-slate-600 active:bg-slate-200 transition-colors"
+                onClick={() => setChartView(chartView === "division" ? "sub" : chartView === "sub" ? "equipos" : "division")}
+                className="px-3 py-1.5 bg-slate-100 rounded-full text-[11px] font-semibold text-slate-600 active:bg-slate-200 transition-colors"
               >
-                {chartView === "division" ? "A B C D" : "5ta 6ta 7ma"}
+                {chartView === "division" ? "Ver A/B/C/D" : chartView === "sub" ? "Ver equipos" : "Ver divisiones"}
               </button>
             </div>
-            <ResponsiveContainer width="100%" height={210}>
-              <BarChart data={chartData} barSize={chartView === "division" ? 36 : 30}>
+            <ResponsiveContainer width="100%" height={chartView === "equipos" ? 250 : 210}>
+              <BarChart data={chartData} barSize={chartView === "equipos" ? 18 : chartView === "division" ? 36 : 30}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="name" tick={{ fontSize: chartView === "equipos" ? 9 : 11, fontWeight: 600 }} axisLine={false} tickLine={false} angle={chartView === "equipos" ? -35 : 0} textAnchor={chartView === "equipos" ? "end" : "middle"} height={chartView === "equipos" ? 40 : 20} />
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} width={35} />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 12, border: "1px solid #e2e8f0" }}
@@ -159,7 +171,8 @@ export default function Dashboard() {
                   }}
                   labelFormatter={(label) => {
                     const item = chartData.find((d) => d.name === label);
-                    return `${label} (${item?.n} jug.)`;
+                    const displayName = (item as any)?.fullName || label;
+                    return `${displayName} (${item?.n} jug.)`;
                   }}
                 />
                 <Bar dataKey="yoyo" radius={[8, 8, 0, 0]}>
