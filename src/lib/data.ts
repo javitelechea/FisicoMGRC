@@ -74,6 +74,33 @@ export function getCategoryColor(category: string): string {
   return "bg-neutral-400";
 }
 
+export function displayPosition(pos: string | null): string {
+  if (!pos) return "Sin posición";
+  const p = pos.toUpperCase().replace(/\./g, "").replace(/\s+/g, " ").trim();
+
+  if (p === "ARQ" || p === "ARQUERA") return "Arquera";
+
+  if (p === "DEF C" || p === "DEF CENTRAL" || p === "DEFCENTRAL" || p === "DEFENSORA CENTRAL")
+    return "Defensora Central";
+  if (p === "DEF D" || p === "DEF L" || p === "DEF I" || p === "DEFDERECHA" || p === "DEFIZQUIERDA"
+    || p === "DEFLATERAL" || p === "DEFENSORA LATERAL" || p === "DEFENDORA LATERAL" || p === "DEFENSORA")
+    return "Defensora Lateral";
+
+  if (p === "VOL C" || p === "VOLCENTRAL" || p === "VOLANTE" || p === "VOL")
+    return "Volante Central";
+  if (p === "VOL D" || p === "VOL I" || p === "VOL L" || p === "VOL LD" || p === "VOL LI"
+    || p === "VOLANTEDERECHA" || p === "VOLANTEIZQUIERDO")
+    return "Volante Lateral";
+  if (p === "VOL/DEL") return "Volante Lateral";
+
+  if (p === "DEL C" || p === "DELCENTRAL" || p === "DELANTERA" || p === "DL")
+    return "Delantera";
+  if (p === "DEL D" || p === "DEL I" || p === "DEL L" || p === "DELDERECHA" || p === "DELIZQUIERDA")
+    return "Delantera";
+
+  return pos;
+}
+
 export function getCategoryColorLight(category: string): string {
   if (category.startsWith("5ta")) return "bg-red-50 text-red-700 border-red-200";
   if (category.startsWith("6ta")) return "bg-neutral-100 text-neutral-800 border-neutral-300";

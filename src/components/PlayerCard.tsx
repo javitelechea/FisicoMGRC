@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Player } from "@/types/player";
-import { getCategoryColorLight } from "@/lib/data";
+import { getCategoryColorLight, displayPosition } from "@/lib/data";
 
 interface PlayerCardProps {
   player: Player;
@@ -32,7 +32,7 @@ export function PlayerCard({ player }: PlayerCardProps) {
               )}
             </div>
             <p className="text-xs text-slate-400 truncate">
-              {player.position || "Sin posicion"}
+              {displayPosition(player.position)}
               {player.category && <span> &middot; {player.category}</span>}
             </p>
           </div>

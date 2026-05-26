@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Player, PlayersData } from "@/types/player";
-import { loadPlayersData, getCategoryColorLight } from "@/lib/data";
+import { loadPlayersData, getCategoryColorLight, displayPosition } from "@/lib/data";
 import { PlayerCharts } from "@/components/PlayerCharts";
 
 export default function PlayerProfilePage() {
@@ -60,7 +60,7 @@ export default function PlayerProfilePage() {
               </span>
             )}
             {player.position && (
-              <span className="text-xs text-slate-400">{player.position}</span>
+              <span className="text-xs text-slate-400">{displayPosition(player.position)}</span>
             )}
             {player.age && (
               <span className="text-xs text-slate-400">{player.age} años</span>
